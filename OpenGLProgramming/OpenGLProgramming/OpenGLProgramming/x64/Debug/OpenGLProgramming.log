@@ -1,0 +1,6 @@
+﻿  Main.cpp
+c:\users\liam\desktop\openglprogramming\openglprogramming\openglprogramming\main.cpp(48): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\users\liam\desktop\openglprogramming\openglprogramming\openglprogramming\main.cpp(48): note: placeholders and their parameters expect 2 variadic arguments, but 0 were provided
+  c:\users\liam\desktop\openglprogramming\openglprogramming\openglprogramming\main.cpp(48): note: the missing variadic argument 1 is required by format string '%i'
+  OpenGLProgramming.vcxproj -> C:\Users\Liam\Desktop\OpenGLProgramming\OpenGLProgramming\x64\Debug\OpenGLProgramming.exe
+  OpenGLProgramming.vcxproj -> C:\Users\Liam\Desktop\OpenGLProgramming\OpenGLProgramming\x64\Debug\OpenGLProgramming.pdb (Partial PDB)
