@@ -8,13 +8,12 @@
 #include "../glm/ext.hpp"
 
 #include "Gizmos.h"
-
+#include "Camera.h"
 
 int main()
 {
 	///Memory leak check
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
 
 	std::cout << "START OF PROGRAM" << std::endl;
 
@@ -47,11 +46,12 @@ int main()
 	auto minor = ogl_GetMinorVersion();
 	printf("GL: %i.%i\n");
 
-	glClearColor(0.35f, 0.65f, 0.75f, 1);	///Sets the screen color
+	glClearColor(0.25f, 0.25f, 0.25f, 1);	///Sets the screen color
 	glEnable(GL_DEPTH_TEST);				///Enables the depth buffer
 
 	aie::Gizmos::create(10000, 10000, 10000, 10000);
 
+	///The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
 	glm::mat4 view = glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0), glm::vec3(0, 1, 0));
 	glm::mat4 projection = glm::perspective(glm::pi<float>() * 0.025f,
 											16 / 9.f, 0.1f, 1000.f);
@@ -78,12 +78,11 @@ int main()
 								 glm::vec3(-10 + i, 0, -10),
 								 i == 10 ? white : black);
 
-			aie::Gizmos::addLine(glm::vec3(-10, 0, -10 + i),
+			aie::Gizmos::addLine(glm::vec3(10, 0, -10 + i),
 								 glm::vec3(-10, 0, -10 + i),
 								 i == 10 ? white : black);
 		}
 
-		
 		aie::Gizmos::draw(projection * view);
 
 		glfwSwapBuffers(window);	///This updates the monitors display by swapping the rendered back buffer.
