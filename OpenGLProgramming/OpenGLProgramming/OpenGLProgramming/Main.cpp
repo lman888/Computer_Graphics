@@ -1,23 +1,28 @@
-#include <iostream>
-#include <crtdbg.h>
-#include <glm.hpp>
-#include "../dependencies/glCore/gl_core_4_5.h"
-#include <glfw3.h>
-
-#include "../glm/glm.hpp"
-#include "../glm/ext.hpp"
-
-#include "Gizmos.h"
-#include "Camera.h"
+#include "Application3D.h"
 
 int main()
 {
-	///Memory leak check
+
+	Application3D* theApp = new Application3D();
+
+	if (theApp->startup() == true)
+	{
+		while (theApp->update() == true)
+		
+			theApp->draw();
+			//theApp->shutdown();
+		
+	}
+
+	delete theApp;
+
+	return 0;
+	/*///Memory leak check
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	std::cout << "START OF PROGRAM" << std::endl;
 
-	if (glfwInit() == false)
+	if (glfwInit() == false)	///if the initialiser is false
 	{
 		return -1;
 	}
@@ -92,6 +97,5 @@ int main()
 
 	aie::Gizmos::destroy();		///Removes all shapes and lines
 	glfwDestroyWindow(window);
-	glfwTerminate();
-	return 0;
+	glfwTerminate();*/
 }

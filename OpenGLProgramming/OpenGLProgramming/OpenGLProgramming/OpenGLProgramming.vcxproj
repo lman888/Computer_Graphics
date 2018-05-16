@@ -118,6 +118,7 @@
   <ItemGroup>
     <ClCompile Include="..\dependencies\AIE_Gizmos\Gizmos.cpp" />
     <ClCompile Include="..\dependencies\glCore\gl_core_4_5.c" />
+    <ClCompile Include="Application3D.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -125,6 +126,7 @@
   <ItemGroup>
     <ClInclude Include="..\dependencies\AIE_Gizmos\Gizmos.h" />
     <ClInclude Include="..\dependencies\glCore\gl_core_4_5.h" />
+    <ClInclude Include="Application3D.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FlyCamera.h" />
   </ItemGroup>
