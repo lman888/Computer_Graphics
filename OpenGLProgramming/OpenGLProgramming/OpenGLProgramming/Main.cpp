@@ -2,22 +2,34 @@
 
 int main()
 {
+	///Memory leak check
+	/*_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	Application3D* theApp = new Application3D();
 
-	if (theApp->startup() == true)
+
+	std::cout << "START OF PROGRAM" << std::endl;
+
+	if (theApp != nullptr)
 	{
 		while (theApp->update() == true)
-		
+		{
 			theApp->draw();
-			//theApp->shutdown();
-		
+		}
+
+			theApp->shutdown();
+	}
+	else
+	{
+		delete theApp;
 	}
 
 	delete theApp;
 
-	return 0;
-	/*///Memory leak check
+	return 0;*/
+
+
+	///Memory leak check
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	std::cout << "START OF PROGRAM" << std::endl;
@@ -27,7 +39,7 @@ int main()
 		return -1;
 	}
 
-	/// The rest of our code goes in here
+	 ///The rest of our code goes in here
 
 	GLFWwindow* window = glfwCreateWindow(1280, 720, "OpenGL Window", 
 										  nullptr, nullptr);
@@ -57,8 +69,8 @@ int main()
 	aie::Gizmos::create(10000, 10000, 10000, 10000);
 
 	///The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
-	glm::mat4 view = glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0), glm::vec3(0, 1, 0));
-	glm::mat4 projection = glm::perspective(glm::pi<float>() * 0.025f,
+	glm::mat4 view = glm::lookAt(glm::vec3(15, 15, 15), glm::vec3(0), glm::vec3(0, 1, 0));
+	glm::mat4 projection = glm::perspective(glm::pi<float>() * 0.25f,
 											16 / 9.f, 0.1f, 1000.f);
 
 
@@ -97,5 +109,7 @@ int main()
 
 	aie::Gizmos::destroy();		///Removes all shapes and lines
 	glfwDestroyWindow(window);
-	glfwTerminate();*/
+	glfwTerminate();
+
+	return 0;
 }

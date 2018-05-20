@@ -11,7 +11,11 @@ public:
 	void update(float deltaTime);
 	void setSpeed(float setSpeed);
 
+	//Camera myCamera;
+
+
 private:
+
 	float speed;
 	glm::vec3 up;
 };

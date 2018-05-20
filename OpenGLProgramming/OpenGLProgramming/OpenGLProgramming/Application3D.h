@@ -2,11 +2,9 @@
 #include <iostream>
 #include <crtdbg.h>
 #include <glm.hpp>
+#include <ext.hpp>
 #include "../dependencies/glCore/gl_core_4_5.h"
 #include <glfw3.h>
-
-#include "../glm/glm.hpp"
-#include "../glm/ext.hpp"
 
 #include "Gizmos.h"
 #include "Camera.h"
@@ -19,18 +17,18 @@ public:
 
 	int startup();
 
-	void update();
+	bool update();
 	
 	void draw();
 	
 	void shutdown();
 
 private:
+
 	GLFWwindow* window;
 
 	glm::mat4 view;
 
 	glm::mat4 projection;
-
 };
 

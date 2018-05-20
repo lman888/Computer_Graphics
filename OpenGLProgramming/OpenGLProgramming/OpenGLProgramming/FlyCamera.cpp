@@ -13,7 +13,7 @@ FlyCamera::~FlyCamera()
 
 void FlyCamera::update(float deltaTime)
 {
-
+	
 }
 
 void FlyCamera::setSpeed(float setSpeed)
