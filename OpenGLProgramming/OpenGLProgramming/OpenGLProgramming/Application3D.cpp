@@ -11,7 +11,7 @@ Application3D::Application3D()
 
 	///The rest of our code goes in here
 
-	GLFWwindow* window = glfwCreateWindow(1280, 720, "OpenGL Window",
+	window = glfwCreateWindow(1280, 720, "OpenGL Window",
 		nullptr, nullptr);
 
 	if (window == nullptr)
