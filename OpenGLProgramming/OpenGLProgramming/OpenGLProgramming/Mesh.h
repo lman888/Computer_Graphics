@@ -1,9 +1,12 @@
 #pragma once
+
+#include "../dependencies/glCore/gl_core_4_5.h"
+
 #include <glfw3.h>
 #include "../glm/glm.hpp"
 #include "../glm/ext.hpp"
 
-#include "../dependencies/glCore/gl_core_4_5.h"
+
 
 class Mesh
 {

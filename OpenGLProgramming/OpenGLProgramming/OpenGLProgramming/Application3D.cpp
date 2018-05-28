@@ -95,6 +95,8 @@ void Application3D::draw()
 			i == 10 ? white : black);
 	}
 
+	mesh->initialiseQuad();
+
 	aie::Gizmos::draw(projection * view);
 
 	glfwSwapBuffers(window);	///This updates the monitors display by swapping the rendered back buffer.

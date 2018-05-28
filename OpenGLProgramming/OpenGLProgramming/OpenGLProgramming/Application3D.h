@@ -8,6 +8,7 @@
 
 #include "Gizmos.h"
 #include "Camera.h"
+#include "Mesh.h"
 
 class Application3D
 {
@@ -24,6 +25,8 @@ public:
 private:
 
 	GLFWwindow* window;
+
+	Mesh* mesh;
 
 	glm::mat4 view;
 
