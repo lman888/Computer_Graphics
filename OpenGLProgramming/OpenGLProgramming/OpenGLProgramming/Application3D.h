@@ -15,8 +15,6 @@ public:
 	Application3D();
 	~Application3D();
 
-	int startup();
-
 	bool update();
 	
 	void draw();

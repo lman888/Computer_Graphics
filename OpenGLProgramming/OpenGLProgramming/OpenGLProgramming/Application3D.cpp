@@ -40,19 +40,14 @@ Application3D::Application3D()
 	aie::Gizmos::create(10000, 10000, 10000, 10000);
 
 	///The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
-	glm::mat4 view = glm::lookAt(glm::vec3(10, 10, 10), glm::vec3(0), glm::vec3(0, 1, 0));
-	glm::mat4 projection = glm::perspective(glm::pi<float>() * 0.25f,
-		16 / 9.f, 0.1f, 1000.f);
+	view = glm::lookAt(glm::vec3(15, 15, 15), glm::vec3(0), glm::vec3(0, 1, 0));
+	projection = glm::perspective(glm::pi<float>() * 0.25f,
+								  16 / 9.0f, 0.1f, 1000.f);
 }
 
 
 Application3D::~Application3D()
 {
-}
-
-int Application3D::startup()
-{
-	return 0;
 }
 
 bool Application3D::update()
@@ -67,7 +62,6 @@ bool Application3D::update()
 	{
 		return false;
 	}
-
 }
 
 void Application3D::shutdown()

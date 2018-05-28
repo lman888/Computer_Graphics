@@ -11,7 +11,7 @@ class Camera
 public:
 	Camera();
 	~Camera();
-	//void update(float deltaTime) = 0;
+	virtual void update(float deltaTime) = 0;
 	void setPerspective(float fieldOfView, float aspectRatio, float near, float far);
 	void setLookAt(glm::vec3 from, glm::vec3 to, glm::vec3 up);
 	void setPosition(glm::vec3 postion);

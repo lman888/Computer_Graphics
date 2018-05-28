@@ -2,13 +2,13 @@
 #include "Camera.h"
 #include <glfw3.h>
 
-class FlyCamera
+class FlyCamera : Camera
 {
 public:
 	FlyCamera();
 	~FlyCamera();
 
-	void update(float deltaTime);
+	virtual void update(float deltaTime) override;
 	void setSpeed(float setSpeed);
 
 	//Camera myCamera;
