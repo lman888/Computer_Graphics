@@ -1,6 +1,6 @@
 #pragma once
 #include "Camera.h"
-#include <glfw3.h>
+#include <GLFW\glfw3.h>
 
 class FlyCamera : Camera
 {
