@@ -1,17 +1,1 @@
-﻿  xkb_unicode.c
-  window.c
-  win32_window.c
-  win32_tls.c
-  win32_time.c
-  win32_monitor.c
-  win32_joystick.c
-  win32_init.c
-  wgl_context.c
-  vulkan.c
-  monitor.c
-  input.c
-  init.c
-  egl_context.c
-  context.c
-  Generating Code...
-  glfw3.vcxproj -> C:\Users\Liam\Desktop\OpenGLProgramming\OpenGLProgramming\x64\Debug\glfw3.lib
+﻿C:\Users\s164032\Documents\Computer_Graphics\OpenGLProgramming\OpenGLProgramming\glfw3\glfw3.vcxproj : error MSB4025: The project file could not be loaded. Could not find file 'C:\Users\s164032\Documents\Computer_Graphics\OpenGLProgramming\OpenGLProgramming\glfw3\glfw3.vcxproj'.

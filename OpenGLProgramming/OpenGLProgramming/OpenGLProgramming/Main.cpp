@@ -5,12 +5,15 @@ int main()
 	///Memory leak check
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	Application3D* theApp = new Application3D();
+	//Application3D* theApp = new Application3D();
 
+	auto theApp = new Application3D();
 
 	std::cout << "START OF PROGRAM" << std::endl;
 
-	if (theApp != nullptr)
+	theApp->initialise(720, 1280, "Hello", false);
+
+	if (theApp->startup() == true)
 	{
 		while (theApp->update() == true)
 		{
@@ -18,7 +21,7 @@ int main()
 		}
 
 			theApp->shutdown();
-	}
+		}
 	else
 	{
 		delete theApp;
