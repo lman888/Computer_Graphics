@@ -1,9 +1,9 @@
 #pragma once
-#include <glm/glm.hpp>
+#include <glm.hpp>
 
-#include <GLFW\glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include <glfw3.h>
+#include "../glm/glm.hpp"
+#include "../glm/ext.hpp"
 
 
 class Camera

@@ -53,11 +53,6 @@ void Mesh::initialiseQuad()
 	//More to go here
 }
 
-void Mesh::Box()
-{
-	///TO DO
-}
-
 void Mesh::draw()
 {
 	glBindVertexArray(vao);

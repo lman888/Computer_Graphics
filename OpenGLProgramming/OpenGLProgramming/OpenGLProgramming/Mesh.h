@@ -1,9 +1,11 @@
 #pragma once
 
-#include <gl_core_4_5.h>
-#include <GLFW\glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include "../dependencies/glCore/gl_core_4_5.h"
+
+#include <glfw3.h>
+#include "../glm/glm.hpp"
+#include "../glm/ext.hpp"
+
 
 
 class Mesh
@@ -21,8 +23,6 @@ public:
 	};
 
 	void initialiseQuad();
-
-	void Box();
 
 	virtual void draw();
 

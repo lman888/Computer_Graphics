@@ -1,2 +1,11 @@
-﻿  Application3D.cpp
-  OpenGLProgramming.vcxproj -> C:\Users\s164032\Documents\Computer_Graphics\OpenGLProgramming\OpenGLProgramming\x64\Debug\OpenGLProgramming.exe
+﻿  Mesh.cpp
+  Generating Code...
+  Compiling...
+  Main.cpp
+  Application3D.cpp
+c:\users\liam\documents\computer_graphics\openglprogramming\openglprogramming\openglprogramming\application3d.cpp(35): warning C4473: 'printf' : not enough arguments passed for format string
+  c:\users\liam\documents\computer_graphics\openglprogramming\openglprogramming\openglprogramming\application3d.cpp(35): note: placeholders and their parameters expect 2 variadic arguments, but 0 were provided
+  c:\users\liam\documents\computer_graphics\openglprogramming\openglprogramming\openglprogramming\application3d.cpp(35): note: the missing variadic argument 1 is required by format string '%i'
+  Generating Code...
+  OpenGLProgramming.vcxproj -> C:\Users\Liam\Documents\Computer_Graphics\OpenGLProgramming\OpenGLProgramming\x64\Debug\OpenGLProgramming.exe
+  OpenGLProgramming.vcxproj -> C:\Users\Liam\Documents\Computer_Graphics\OpenGLProgramming\OpenGLProgramming\x64\Debug\OpenGLProgramming.pdb (Partial PDB)

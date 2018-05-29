@@ -69,20 +69,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\s164032\Documents\Computer_Graphics\OpenGLProgramming\OpenGLProgramming\dependencies\AIE_Utilities;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\s164032\Documents\Computer_Graphics\OpenGLProgramming\OpenGLProgramming\dependencies\AIE_Utilities;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)dependencies\AIE_Utilities;$(SolutionDir)dependencies\glCore;$(SolutionDir)dependencies\glfw3;$(SolutionDir)dependencies\glm;$(SolutionDir)dependencies\glfw\include;$(SolutionDir)dependencies\stb;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)dependencies\AIE_Utilities;$(SolutionDir)dependencies\glCore;$(SolutionDir)dependencies\glfw3;$(SolutionDir)dependencies\glm;$(SolutionDir)dependencies\glfw\include;$(SolutionDir)dependencies\stb;$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -99,7 +86,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,14 +113,10 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\dependencies\AIE_Utilities\Gizmos.cpp" />
-    <ClCompile Include="..\dependencies\AIE_Utilities\OBJMesh.cpp" />
-    <ClCompile Include="..\dependencies\AIE_Utilities\Shader.cpp" />
-    <ClCompile Include="..\dependencies\AIE_Utilities\Texture.cpp" />
+    <ClCompile Include="..\dependencies\AIE_Gizmos\Gizmos.cpp" />
     <ClCompile Include="..\dependencies\glCore\gl_core_4_5.c" />
     <ClCompile Include="Application3D.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -142,11 +125,7 @@
     <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\dependencies\AIE_Utilities\Gizmos.h" />
-    <ClInclude Include="..\dependencies\AIE_Utilities\OBJMesh.h" />
-    <ClInclude Include="..\dependencies\AIE_Utilities\Shader.h" />
-    <ClInclude Include="..\dependencies\AIE_Utilities\Texture.h" />
-    <ClInclude Include="..\dependencies\AIE_Utilities\tiny_obj_loader.h" />
+    <ClInclude Include="..\dependencies\AIE_Gizmos\Gizmos.h" />
     <ClInclude Include="..\dependencies\glCore\gl_core_4_5.h" />
     <ClInclude Include="Application3D.h" />
     <ClInclude Include="Camera.h" />
