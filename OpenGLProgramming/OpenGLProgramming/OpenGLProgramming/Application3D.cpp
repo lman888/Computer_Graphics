@@ -224,6 +224,7 @@ void Application3D::draw()
 	auto pvm = m_projection * m_view * m_bunnyTransform;
 	m_shader.bindUniform("ProjectionViewModel", pvm);
 
+	///Draws
 	m_quadMesh.draw();
 
 	m_bunnyMesh.draw();
