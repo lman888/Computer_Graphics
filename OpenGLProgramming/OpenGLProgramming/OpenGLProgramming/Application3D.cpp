@@ -95,7 +95,7 @@ bool Application3D::startup()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.f);
 
-	///Load fragment shader from file
+	///Load vertex shader from file
 	m_shader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/simple.vert");
 
@@ -108,6 +108,25 @@ bool Application3D::startup()
 		printf("Shader Error: %s/n", m_shader.getLastError());
 	}
 
+	///Load vertex texture from file
+	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
+		"./textures/textured.vert");
+
+	///Load fragment texture from file
+	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
+		"./textures/textured.frag");
+
+	if (m_texturedShader.link() == false)
+	{
+		printf("Texture Error: %s/n", m_texturedShader.getLastError());
+	}
+
+	if (m_gridTexture.load("./textures/numbered_grid.tga") == false)
+	{
+		printf("Failed to load texture!\n");
+		return false;
+	}
+
 	if (m_bunnyMesh.load("./stanford/Bunny.obj") == false)
 	{
 		printf("Bunny Mesh Error!\n");
@@ -115,6 +134,7 @@ bool Application3D::startup()
 
 	m_quadMesh.initialiseQuad();
 
+	///Bunnys size
 	m_bunnyTransform =
 	{
 		0.5f, 0, 0, 0,
@@ -123,6 +143,7 @@ bool Application3D::startup()
 		0, 0, 0, 1
 	};
 
+	///Quads size
 	m_quadTransform =
 	{
 		10, 0, 0, 0,
@@ -142,9 +163,9 @@ bool Application3D::initialise(int windowH, int windowW, std::string windowTitle
 		return false;
 	}
 
-	auto monitor = glfwGetPrimaryMonitor();
+	auto monitor = glfwGetPrimaryMonitor();	///Sets the primary window to the monitor
 
-	GLFWwindow* window = glfwCreateWindow(windowW, windowH, windowTitle.c_str(), (isFullScreen ? monitor : nullptr), nullptr);
+	GLFWwindow* window = glfwCreateWindow(windowW, windowH, windowTitle.c_str(), (isFullScreen ? monitor : nullptr), nullptr);	///Creates the window
 
 	if (window == nullptr)
 	{
@@ -162,6 +183,7 @@ bool Application3D::initialise(int windowH, int windowW, std::string windowTitle
 		return false;									///return 3
 	}
 
+	///pushes in variables
 	m_windowHeight = windowW;
 	m_window = window;
 
@@ -195,15 +217,16 @@ void Application3D::draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	aie::Gizmos::clear();
-
 	aie::Gizmos::addTransform(glm::mat4(1));
 
-
+	///Colours
 	glm::vec4 white(1);
 	glm::vec4 black(0, 0, 0, 1);
 
-	aie::Gizmos::draw(m_projection * m_view);
 
+	aie::Gizmos::draw(m_projection * m_view);	///Draws the view of the camera
+
+	///Draws the grid
 	for (int i = 0; i < 21; i++)
 	{
 		///Draws the Lines
@@ -219,20 +242,25 @@ void Application3D::draw()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.0f);
 
-	m_shader.bind();
+	m_shader.bind();							///Binds the shader
+	m_texturedShader.bind();
 
-	auto pvm = m_projection * m_view * m_bunnyTransform;
-	m_shader.bindUniform("ProjectionViewModel", pvm);
+	///Binds transform
+	auto pvm = m_projection * m_view * m_quadTransform;
+	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
 
-	m_quadMesh.draw();
+	///Binds texture location
+	m_texturedShader.bindUniform("diffuseTexture", 0);
 
-	m_bunnyMesh.draw();
+	//auto bvm = m_projection * m_view * m_bunnyTransform;
+	//m_shader.bindUniform("ProjectionViewModel", bvm);
 
-	///Draw 3D gizmos
-	aie::Gizmos::draw(m_projection * m_view);
+	m_quadMesh.draw();							///Draws the Quad Mesh
+	//m_bunnyMesh.draw();							///Draws the bunny Mesh
 
-	///Draw 2D Gizmos using orthogonal projection matrix
-	aie::Gizmos::draw2D((float)getWindowW(), (float)getWindowH());
 
-	glfwSwapBuffers(m_window);	///This updates the monitors display by swapping the rendered back buffer.
+	aie::Gizmos::draw(m_projection * m_view);						///Draw 3D gizmos
+	aie::Gizmos::draw2D((float)getWindowW(), (float)getWindowH());	///Draw 2D Gizmos using orthogonal projection matrix
+
+	glfwSwapBuffers(m_window);					///This updates the monitors display by swapping the rendered back buffer.
 }

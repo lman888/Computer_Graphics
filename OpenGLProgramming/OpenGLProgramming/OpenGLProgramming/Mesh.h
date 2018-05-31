@@ -20,13 +20,18 @@ public:
 		glm::vec2 texCoord;
 	};
 
+	///Initialises the plane
 	void initialiseQuad();
 
+	///TO DO BOX
 	void Box();
 
+	///Virtual draw
 	virtual void draw();
 
 protected:
+
+	///Variables
 	unsigned int triCount;
 	unsigned int vao, vbo, ibo;
 };
