@@ -95,6 +95,14 @@ bool Application3D::startup()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.f);
 
+	///Loads frag shader from file
+	m_phongShader.loadShader(aie::eShaderStage::VERTEX,
+		"./shaders/phong.vert");
+
+	///Loads vertex shader from file
+	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT,
+		"./shaders/phong.frag");
+
 	///Load vertex shader from file
 	m_shader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/simple.vert");
@@ -121,6 +129,11 @@ bool Application3D::startup()
 		printf("Texture Error: %s/n", m_texturedShader.getLastError());
 	}
 
+	if (m_phongShader.link() == false)
+	{
+		printf("Texture Error: %s/n", m_phongShader.getLastError());
+	}
+
 	if (m_gridTexture.load("./textures/numbered_grid.tga") == false)
 	{
 		printf("Failed to load texture!\n");
@@ -132,25 +145,43 @@ bool Application3D::startup()
 		printf("Bunny Mesh Error!\n");
 	}
 
+	if (m_dragonMesh.load("./stanford/Dragon.obj") == false)
+	{
+		printf("Dragon Mesh Error!\n");
+	}
+
 	m_quadMesh.initialiseQuad();
 
+	///Sets the lights colour
+	m_light.diffuse = { 1, 1, 0 };
+	m_light.specular = { 1, 1, 0 };
+	m_ambientLight = { 0.25f, 0.25f, 0.25f };
+
 	///Bunnys size
-	m_bunnyTransform =
+	//m_bunnyTransform =
+	//{
+	//	0.5f, 0, 0, 0,
+	//	0, 0.5f, 0, 0,
+	//	0, 0, 0.5f, 0,
+	//	0, 0, 0, 1
+	//};
+
+	m_dragonTransform =
 	{
-		0.5f, 0, 0, 0,
-		0, 0.5f, 0, 0,
-		0, 0, 0.5f, 0,
+		0.3, 0, 0, 0,
+		0, 0.3, 0, 0,
+		0, 0, 0.3, 0,
 		0, 0, 0, 1
 	};
 
 	///Quads size
-	m_quadTransform =
-	{
-		10, 0, 0, 0,
-		0, 10, 0, 0,
-		0, 0, 10, 0,
-		0, 0, 0, 1
-	};
+	//m_quadTransform =
+	//{
+	//	10, 0, 0, 0,
+	//	0, 10, 0, 0,
+	//	0, 0, 10, 0,
+	//	0, 0, 0, 1
+	//};
 
 
 	return true;
@@ -192,6 +223,13 @@ bool Application3D::initialise(int windowH, int windowW, std::string windowTitle
 
 bool Application3D::update()
 {
+	//Query time since application started
+	float time = glfwGetTime();
+
+	//Rotates the light
+	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2),
+		glm::sin(time * 2), 0));
+
 	if (glfwWindowShouldClose(m_window) == false &&
 		glfwGetKey(m_window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
@@ -242,21 +280,32 @@ void Application3D::draw()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.0f);
 
-	m_shader.bind();							///Binds the shader
+	///Binds the shaders
+	m_shader.bind();							
 	m_texturedShader.bind();
+	m_phongShader.bind();						
 
 	///Binds transform
-	auto pvm = m_projection * m_view * m_quadTransform;
-	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
+	//auto pvm = m_projection * m_view * m_quadTransform;
+	//m_texturedShader.bindUniform("ProjectionViewModel", pvm);
 
 	///Binds texture location
 	m_texturedShader.bindUniform("diffuseTexture", 0);
 
-	//auto bvm = m_projection * m_view * m_bunnyTransform;
-	//m_shader.bindUniform("ProjectionViewModel", bvm);
+	m_phongShader.bindUniform("Ia", m_ambientLight);
+	m_phongShader.bindUniform("Id", m_light.diffuse);
+	m_phongShader.bindUniform("Is", m_light.specular);
+	m_phongShader.bindUniform("LightDirection", m_light.direction);
 
-	m_quadMesh.draw();							///Draws the Quad Mesh
+	auto pvm = m_projection * m_view * m_dragonTransform;
+	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+
+	m_phongShader.bindUniform("NormalMatrix",
+		glm::inverseTranspose(glm::mat3(m_dragonTransform)));
+
+	//m_quadMesh.draw();							///Draws the Quad Mesh
 	//m_bunnyMesh.draw();							///Draws the bunny Mesh
+	m_dragonMesh.draw();						///Draws the dragon Mesh
 
 
 	aie::Gizmos::draw(m_projection * m_view);						///Draw 3D gizmos

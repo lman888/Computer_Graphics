@@ -16,6 +16,13 @@
 
 
 
+struct  Light
+{
+	glm::vec3 direction;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+};
+
 class Application3D
 {
 public:
@@ -54,17 +61,22 @@ private:
 	///Variables
 	GLFWwindow*			m_window;
 	Mesh				m_quadMesh;
+	Light				m_light;
 
 	///aie variables
+	aie::ShaderProgram  m_phongShader;
 	aie::ShaderProgram  m_shader;
-	aie::OBJMesh		m_bunnyMesh;
-	aie::Texture		m_gridTexture;
 	aie::ShaderProgram  m_texturedShader;
+	aie::OBJMesh		m_bunnyMesh;
+	aie::OBJMesh		m_dragonMesh;
+	aie::Texture		m_gridTexture;
 
 	std::chrono::high_resolution_clock::time_point m_previousFrameTime;
 	std::chrono::high_resolution_clock::time_point m_applicationStartTime;
 
 	///Variables
+	glm::vec3			m_ambientLight;
+	glm::mat4			m_dragonTransform;
 	glm::mat4			m_bunnyTransform;
 	glm::mat4			m_quadTransform;
 	glm::mat4			m_view;
