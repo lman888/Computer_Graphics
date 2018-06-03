@@ -87,42 +87,38 @@ bool Application3D::startup()
 	glClearColor(0.25f, 0.25f, 0.25f, 1);	///Sets the screen color
 	//glEnable(GL_DEPTH_TEST);				///Enables the depth buffer
 
-	///Initialize primitive counts
+	//Initialize primitive counts
 	aie::Gizmos::create(10000, 10000, 10000, 10000);
 
-	///The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
+	//The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
 	m_view = glm::lookAt(glm::vec3(20), glm::vec3(0), glm::vec3(0, 1, 0));
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.f);
 
-	///Loads frag shader from file
+	//Loads the Frag and Vert textures from file
 	m_phongShader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/phong.vert");
 
-	///Loads vertex shader from file
 	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./shaders/phong.frag");
 
-	///Load vertex shader from file
 	m_shader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/simple.vert");
 
-	///Load fragment shader from file
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./shaders/simple.frag");
 
+	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
+		"./textures/textured.vert");
+
+	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
+		"./textures/textured.frag");
+
+	//Checks if it can link the Shader
 	if (m_shader.link() == false)
 	{
 		printf("Shader Error: %s/n", m_shader.getLastError());
 	}
-
-	///Load vertex texture from file
-	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
-		"./textures/textured.vert");
-
-	///Load fragment texture from file
-	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
-		"./textures/textured.frag");
 
 	if (m_texturedShader.link() == false)
 	{
@@ -134,6 +130,7 @@ bool Application3D::startup()
 		printf("Texture Error: %s/n", m_phongShader.getLastError());
 	}
 
+	//Checks if it can load the Mesh
 	if (m_gridTexture.load("./textures/numbered_grid.tga") == false)
 	{
 		printf("Failed to load texture!\n");
@@ -152,12 +149,12 @@ bool Application3D::startup()
 
 	m_quadMesh.initialiseQuad();
 
-	///Sets the lights colour
+	//Sets the lights colour
 	m_light.diffuse = { 1, 1, 0 };
 	m_light.specular = { 1, 1, 0 };
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
-	///Bunnys size
+	//Bunnys size
 	//m_bunnyTransform =
 	//{
 	//	0.5f, 0, 0, 0,
@@ -166,6 +163,7 @@ bool Application3D::startup()
 	//	0, 0, 0, 1
 	//};
 
+	//Dragons size
 	m_dragonTransform =
 	{
 		0.3, 0, 0, 0,
@@ -285,11 +283,7 @@ void Application3D::draw()
 	m_texturedShader.bind();
 	m_phongShader.bind();						
 
-	///Binds transform
-	//auto pvm = m_projection * m_view * m_quadTransform;
-	//m_texturedShader.bindUniform("ProjectionViewModel", pvm);
-
-	///Binds texture location
+	//Binds texture location
 	m_texturedShader.bindUniform("diffuseTexture", 0);
 
 	m_phongShader.bindUniform("Ia", m_ambientLight);
@@ -303,9 +297,9 @@ void Application3D::draw()
 	m_phongShader.bindUniform("NormalMatrix",
 		glm::inverseTranspose(glm::mat3(m_dragonTransform)));
 
-	//m_quadMesh.draw();							///Draws the Quad Mesh
-	//m_bunnyMesh.draw();							///Draws the bunny Mesh
-	m_dragonMesh.draw();						///Draws the dragon Mesh
+	//m_quadMesh.draw();						///Draws the Quad Mesh
+	//m_bunnyMesh.draw();						///Draws the bunny Mesh
+	m_dragonMesh.draw();						//Draws the dragon Mesh
 
 
 	aie::Gizmos::draw(m_projection * m_view);						///Draw 3D gizmos
