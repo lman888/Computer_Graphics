@@ -1,10 +1,15 @@
 #pragma once
 #include <iostream>
 #include <crtdbg.h>
+#include <chrono>
+
+
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext.hpp>
 #include <gl_core_4_5.h>
 #include <GLFW\glfw3.h>
+
 
 #include <Gizmos.h>
 #include "Camera.h"
@@ -12,7 +17,6 @@
 #include <Shader.h>
 #include <OBJMesh.h>
 
-#include <chrono>
 
 
 
@@ -69,6 +73,7 @@ private:
 	aie::ShaderProgram  m_texturedShader;
 	aie::OBJMesh		m_bunnyMesh;
 	aie::OBJMesh		m_dragonMesh;
+	aie::OBJMesh		m_spearMesh;
 	aie::Texture		m_gridTexture;
 
 	std::chrono::high_resolution_clock::time_point m_previousFrameTime;
@@ -76,6 +81,7 @@ private:
 
 	///Variables
 	glm::vec3			m_ambientLight;
+	glm::mat4			m_spearTransform;
 	glm::mat4			m_dragonTransform;
 	glm::mat4			m_bunnyTransform;
 	glm::mat4			m_quadTransform;

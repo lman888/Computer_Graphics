@@ -4,75 +4,6 @@
 
 Application3D::Application3D()
 {
-	/*if (glfwInit() == false)	///if the initialiser is false
-	{
-		return;
-	}
-
-	///The rest of our code goes in here
-
-	window = glfwCreateWindow(windowW, windowH, "OpenGL Window",
-		nullptr, nullptr);
-
-	if (window == nullptr)
-	{
-		glfwTerminate();
-		return;
-	}
-
-	///Brings the screen to the front
-	glfwMakeContextCurrent(window);
-
-	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
-	{
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return;									///return 3
-	}
-
-	auto major = ogl_GetMajorVersion();
-	auto minor = ogl_GetMinorVersion();
-	printf("GL: %i.%i\n");
-
-	glClearColor(0.25f, 0.25f, 0.25f, 1);	///Sets the screen color
-	glEnable(GL_DEPTH_TEST);				///Enables the depth buffer
-
-
-	getWindowHeight = windowH;
-	getWindowWidth = windowW;
-
-	aie::Gizmos::create(10000, 10000, 10000, 10000);
-
-	///The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
-	view = glm::lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0, 1, 0));
-	projection = glm::perspective(glm::pi<float>() * 0.25f,
-								  getWindowW() / (float)getWindowH(), 0.1f, 1000.f);
-
-	///Load fragment shader from file
-	m_shader.loadShader(aie::eShaderStage::VERTEX,
-		"./shaders/simple.vert");
-
-	///Load fragment shader from file
-	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
-		"./shaders/simple.frag");
-
-	if (m_shader.link() == false)
-	{
-		printf("Shader Error: %s/n", m_shader.getLastError());
-	}
-
-	if (m_bunnyMesh.load("./stanford/bunny.obj") == false)
-	{
-		printf("Bunny Mesh Error!\n");
-	}
-
-	bunnyTransform = 
-	{
-		1.5f, 0, 0, 0,
-		0, 0.5f, 0, 0,
-		0, 0, 0.5f, 0,
-		0, 0, 0, 1
-	};*/
 
 }
 
@@ -83,10 +14,6 @@ Application3D::~Application3D()
 
 bool Application3D::startup()
 {
-
-	glClearColor(0.25f, 0.25f, 0.25f, 1);	///Sets the screen color
-	//glEnable(GL_DEPTH_TEST);				///Enables the depth buffer
-
 	//Initialize primitive counts
 	aie::Gizmos::create(10000, 10000, 10000, 10000);
 
@@ -95,22 +22,20 @@ bool Application3D::startup()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.f);
 
+
 	//Loads the Frag and Vert textures from file
 	m_phongShader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/phong.vert");
-
 	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./shaders/phong.frag");
 
 	m_shader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/simple.vert");
-
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./shaders/simple.frag");
 
 	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
 		"./textures/textured.vert");
-
 	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./textures/textured.frag");
 
@@ -149,6 +74,7 @@ bool Application3D::startup()
 
 	m_quadMesh.initialiseQuad();
 
+
 	//Sets the lights colour
 	m_light.diffuse = { 1, 1, 0 };
 	m_light.specular = { 1, 1, 0 };
@@ -166,20 +92,20 @@ bool Application3D::startup()
 	//Dragons size
 	m_dragonTransform =
 	{
-		0.3, 0, 0, 0,
-		0, 0.3, 0, 0,
-		0, 0, 0.3, 0,
-		0, 0, 0, 1
+		0.5f, 0, 0, 0,
+		0, 0.5f, 0, 0,
+		0, 0, 0.5f, 0,
+		0, 0, 0, 1.0f
 	};
 
 	///Quads size
-	//m_quadTransform =
-	//{
-	//	10, 0, 0, 0,
-	//	0, 10, 0, 0,
-	//	0, 0, 10, 0,
-	//	0, 0, 0, 1
-	//};
+	/*m_quadTransform =
+	{
+		10, 0, 0, 0,
+		0, 10, 0, 0,
+		0, 0, 10, 0,
+		0, 0, 0, 1
+	};*/
 
 
 	return true;
@@ -228,6 +154,12 @@ bool Application3D::update()
 	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2),
 		glm::sin(time * 2), 0));
 
+	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	///Informs OpenGL to wipe the back-buffer colors clean | Informs it to clear the distance to the closest pixels.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+
 	if (glfwWindowShouldClose(m_window) == false &&
 		glfwGetKey(m_window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
@@ -249,9 +181,6 @@ void Application3D::shutdown()
 
 void Application3D::draw()
 {
-	///Informs OpenGL to wipe the back-buffer colors clean | Informs it to clear the distance to the closest pixels.
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	aie::Gizmos::clear();
 	aie::Gizmos::addTransform(glm::mat4(1));
 
@@ -278,7 +207,7 @@ void Application3D::draw()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.0f);
 
-	///Binds the shaders
+	//Binds the shaders
 	m_shader.bind();							
 	m_texturedShader.bind();
 	m_phongShader.bind();						
@@ -294,12 +223,14 @@ void Application3D::draw()
 	auto pvm = m_projection * m_view * m_dragonTransform;
 	m_phongShader.bindUniform("ProjectionViewModel", pvm);
 
+	m_dragonMesh.draw();						//Draws the dragon Mesh
+
 	m_phongShader.bindUniform("NormalMatrix",
 		glm::inverseTranspose(glm::mat3(m_dragonTransform)));
 
-	//m_quadMesh.draw();						///Draws the Quad Mesh
+	m_quadMesh.draw();						///Draws the Quad Mesh
 	//m_bunnyMesh.draw();						///Draws the bunny Mesh
-	m_dragonMesh.draw();						//Draws the dragon Mesh
+
 
 
 	aie::Gizmos::draw(m_projection * m_view);						///Draw 3D gizmos
