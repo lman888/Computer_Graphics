@@ -135,6 +135,7 @@
     <ClCompile Include="..\dependencies\AIE_Utilities\Shader.cpp" />
     <ClCompile Include="..\dependencies\AIE_Utilities\Texture.cpp" />
     <ClCompile Include="..\dependencies\glCore\gl_core_4_5.c" />
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Application3D.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FlyCamera.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="..\dependencies\AIE_Utilities\Texture.h" />
     <ClInclude Include="..\dependencies\AIE_Utilities\tiny_obj_loader.h" />
     <ClInclude Include="..\dependencies\glCore\gl_core_4_5.h" />
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Application3D.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FlyCamera.h" />

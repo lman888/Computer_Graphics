@@ -18,7 +18,7 @@ bool Application3D::startup()
 	aie::Gizmos::create(10000, 10000, 10000, 10000);
 
 	//The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
-	m_view = glm::lookAt(glm::vec3(20), glm::vec3(0), glm::vec3(0, 1, 0));
+	m_view = glm::lookAt(glm::vec3(15), glm::vec3(0), glm::vec3(0, 1, 0));
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.f);
 
@@ -39,6 +39,11 @@ bool Application3D::startup()
 	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./textures/textured.frag");
 
+	m_normalShader.loadShader(aie::eShaderStage::VERTEX,
+		"./shaders/normalmap.vert");
+	m_normalShader.loadShader(aie::eShaderStage::FRAGMENT,
+		"./shaders/normalmap.frag");
+
 	//Checks if it can link the Shader
 	if (m_shader.link() == false)
 	{
@@ -53,6 +58,11 @@ bool Application3D::startup()
 	if (m_phongShader.link() == false)
 	{
 		printf("Texture Error: %s/n", m_phongShader.getLastError());
+	}
+
+	if (m_normalShader.link() == false)
+	{
+		printf("Normal Error: %s/n", m_normalShader.getLastError());
 	}
 
 	//Checks if it can load the Mesh
@@ -70,6 +80,11 @@ bool Application3D::startup()
 	if (m_dragonMesh.load("./stanford/Dragon.obj") == false)
 	{
 		printf("Dragon Mesh Error!\n");
+	}
+
+	if (m_spearMesh.load("./soulspear/soulspear.obj", true, true) == false)
+	{
+		printf("SoulSpear Mesh Error!\n");
 	}
 
 	m_quadMesh.initialiseQuad();
@@ -90,11 +105,19 @@ bool Application3D::startup()
 	//};
 
 	//Dragons size
-	m_dragonTransform =
+	/*m_dragonTransform =
 	{
 		0.5f, 0, 0, 0,
 		0, 0.5f, 0, 0,
 		0, 0, 0.5f, 0,
+		0, 0, 0, 1.0f
+	};*/
+
+	m_spearTransform =
+	{
+		1.0f, 0, 0, 0,
+		0,1.0f, 0, 0,
+		0, 0, 1.0f, 0,
 		0, 0, 0, 1.0f
 	};
 
@@ -210,26 +233,29 @@ void Application3D::draw()
 	//Binds the shaders
 	m_shader.bind();							
 	m_texturedShader.bind();
-	m_phongShader.bind();						
+	m_phongShader.bind();	
+	//Bind shader
+	m_normalShader.bind();
+	
+	m_normalShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
+	m_normalShader.bindUniform("Ia", m_ambientLight);
+	m_normalShader.bindUniform("Id", m_light.diffuse);
+	m_normalShader.bindUniform("Is", m_light.specular);
+	//Bind light
+	m_normalShader.bindUniform("lightDirection", m_light.direction);
+	
+	//Bind transform
+	auto pvm = m_projection * m_view * m_spearTransform;
+	m_normalShader.bindUniform("ProjectionViewModel", pvm);
+	
+	//Bind transforms for lighting
+	glm::mat3 mat = glm::inverseTranspose(glm::mat3(m_spearTransform));
+	m_normalShader.bindUniform("NormalMatrix", mat);
 
-	//Binds texture location
-	m_texturedShader.bindUniform("diffuseTexture", 0);
-
-	m_phongShader.bindUniform("Ia", m_ambientLight);
-	m_phongShader.bindUniform("Id", m_light.diffuse);
-	m_phongShader.bindUniform("Is", m_light.specular);
-	m_phongShader.bindUniform("LightDirection", m_light.direction);
-
-	auto pvm = m_projection * m_view * m_dragonTransform;
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	m_dragonMesh.draw();						//Draws the dragon Mesh
-
-	m_phongShader.bindUniform("NormalMatrix",
-		glm::inverseTranspose(glm::mat3(m_dragonTransform)));
-
-	m_quadMesh.draw();						///Draws the Quad Mesh
+	//m_dragonMesh.draw();						//Draws the dragon Mesh
+	//m_quadMesh.draw();						///Draws the Quad Mesh
 	//m_bunnyMesh.draw();						///Draws the bunny Mesh
+	m_spearMesh.draw();
 
 
 
