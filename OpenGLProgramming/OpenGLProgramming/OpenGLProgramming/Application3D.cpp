@@ -87,6 +87,13 @@ bool Application3D::startup()
 		printf("SoulSpear Mesh Error!\n");
 	}
 
+	//Checks if Render Taget has been initialised
+	if (m_renderTarget.initialise(1, getWindowH(), getWindowW()) == false)
+	{
+		printf("Render Target Error!\n");
+		return false;
+	}
+
 	m_quadMesh.initialiseQuad();
 
 
@@ -96,13 +103,13 @@ bool Application3D::startup()
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
 	//Bunnys size
-	//m_bunnyTransform =
-	//{
-	//	0.5f, 0, 0, 0,
-	//	0, 0.5f, 0, 0,
-	//	0, 0, 0.5f, 0,
-	//	0, 0, 0, 1
-	//};
+	m_bunnyTransform =
+	{
+		0.5f, 0, 0, 0,
+		0, 0.5f, 0, 0,
+		0, 0, 0.5f, 0,
+		0, 0, 0, 1
+	};
 
 	//Dragons size
 	/*m_dragonTransform =
@@ -113,15 +120,15 @@ bool Application3D::startup()
 		0, 0, 0, 1.0f
 	};*/
 
-	m_spearTransform =
+	/*m_spearTransform =
 	{
 		1.0f, 0, 0, 0,
 		0,1.0f, 0, 0,
 		0, 0, 1.0f, 0,
 		0, 0, 0, 1.0f
-	};
+	};*/
 
-	///Quads size
+	//Quads size
 	/*m_quadTransform =
 	{
 		10, 0, 0, 0,
@@ -211,7 +218,6 @@ void Application3D::draw()
 	glm::vec4 white(1);
 	glm::vec4 black(0, 0, 0, 1);
 
-
 	aie::Gizmos::draw(m_projection * m_view);	///Draws the view of the camera
 
 	///Draws the grid
@@ -230,37 +236,59 @@ void Application3D::draw()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.0f);
 
+	//Bind our Render Target
+	m_renderTarget.bind();
+
+	clearScreen();
+
 	//Binds the shaders
 	m_shader.bind();							
-	m_texturedShader.bind();
 	m_phongShader.bind();	
-	//Bind shader
 	m_normalShader.bind();
 	
-	m_normalShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
-	m_normalShader.bindUniform("Ia", m_ambientLight);
-	m_normalShader.bindUniform("Id", m_light.diffuse);
-	m_normalShader.bindUniform("Is", m_light.specular);
-	//Bind light
-	m_normalShader.bindUniform("lightDirection", m_light.direction);
+	//Bind list
+	m_phongShader.bindUniform("Ia", m_ambientLight);
+	m_phongShader.bindUniform("Id", m_light.diffuse);
+	m_phongShader.bindUniform("Is", m_light.specular);
+	m_phongShader.bindUniform("lightDirection", m_light.direction);
+	m_phongShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
 	
 	//Bind transform
-	auto pvm = m_projection * m_view * m_spearTransform;
-	m_normalShader.bindUniform("ProjectionViewModel", pvm);
+	auto pvm = m_projection * m_view * m_bunnyTransform;
+	m_phongShader.bindUniform("ProjectionViewModel", pvm);
 	
+	//Binds transform for lighting
+	m_phongShader.bindUniform("ModelMatrix", m_bunnyTransform);
+	m_phongShader.bindUniform("NormalMatrix", 
+		glm::inverseTranspose(glm::mat3(m_bunnyTransform)));
+
+	m_renderTarget.unbind();
+
+	clearScreen();
+
+	m_bunnyMesh.draw();						//Draws the Bunny Mesh
+
 	//Bind transforms for lighting
-	glm::mat3 mat = glm::inverseTranspose(glm::mat3(m_spearTransform));
-	m_normalShader.bindUniform("NormalMatrix", mat);
+	//glm::mat3 mat = glm::inverseTranspose(glm::mat3(m_bunnyTransform));
+	//m_normalShader.bindUniform("NormalMatrix", mat);
 
-	//m_dragonMesh.draw();						//Draws the dragon Mesh
-	//m_quadMesh.draw();						///Draws the Quad Mesh
-	//m_bunnyMesh.draw();						///Draws the bunny Mesh
-	m_spearMesh.draw();
+	//m_dragonMesh.draw();					//Draws the Dragon Mesh
+	//m_spearMesh.draw();					//Draws the Spear Mesh
 
-
+	m_texturedShader.bind();
+	pvm = m_projection * m_view * m_quadTransform;
+	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
+	m_texturedShader.bindUniform("diffuseTexture", 0);
+	m_renderTarget.getTarget(0).bind(0);
+	m_quadMesh.draw();						//Draws the Quad Mesh
 
 	aie::Gizmos::draw(m_projection * m_view);						///Draw 3D gizmos
 	aie::Gizmos::draw2D((float)getWindowW(), (float)getWindowH());	///Draw 2D Gizmos using orthogonal projection matrix
 
 	glfwSwapBuffers(m_window);					///This updates the monitors display by swapping the rendered back buffer.
+}
+
+void Application3D::clearScreen()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

@@ -16,6 +16,7 @@
 #include "Mesh.h"
 #include <Shader.h>
 #include <OBJMesh.h>
+#include "RenderTarget.h"
 
 
 
@@ -45,6 +46,8 @@ public:
 	///Draws the objects to the screen
 	void draw();
 	
+	void clearScreen();
+
 	///Shutdowns the application
 	void shutdown();
 
@@ -76,6 +79,7 @@ private:
 	aie::OBJMesh		m_dragonMesh;
 	aie::OBJMesh		m_spearMesh;
 	aie::Texture		m_gridTexture;
+	aie::RenderTarget   m_renderTarget;
 
 	std::chrono::high_resolution_clock::time_point m_previousFrameTime;
 	std::chrono::high_resolution_clock::time_point m_applicationStartTime;

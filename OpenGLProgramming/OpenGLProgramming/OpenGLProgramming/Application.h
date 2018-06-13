@@ -27,7 +27,7 @@ public:
 	bool Initialise();
 
 	//Creates the main game loop
-	void StartUp();
+	void Start();
 
 	//ShutsDown the spplication
 	void ShutDown();

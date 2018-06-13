@@ -21,11 +21,12 @@ uniform mat4 ModelMatrix;
 uniform mat3 NormalMatrix;
 
 
-void main() {
-vTexCoord = TexCoord;
-vPosition = ModelMatrix * Position;
-vNormal = NormalMatrix * Normal.xyz;
-vTangent = NormalMatrix * Tangent.xyz;
-vBiTangent = cross(vNormal, vTangent) * Tangent.w;
-gl_Position = ProjectionViewModel * Position;
+void main() 
+{
+	vTexCoord = TexCoord;
+	vPosition = ModelMatrix * Position;
+	vNormal = NormalMatrix * Normal.xyz;
+	vTangent = NormalMatrix * Tangent.xyz;
+	vBiTangent = cross(vNormal, vTangent) * Tangent.w;
+	gl_Position = ProjectionViewModel * Position;
 }
