@@ -34,23 +34,21 @@ void Mesh::initialiseQuad()
 	verticles[4].position = { 0.5f, 0, 0.5f, 1 };
 	verticles[5].position = { 0.5f, 0, -0.5f, 1 };
 
-	Vertex vertices[6];
-	vertices[0].texCoord = { 0, 1 }; ///Bottom Left
-	vertices[1].texCoord = { 1, 1};	 ///Bottom eight
-	vertices[2].texCoord = { 0, 0};	 ///Top left
+	verticles[0].texCoord = { 0, 1 }; ///Bottom Left
+	verticles[1].texCoord = { 1, 1};	 ///Bottom eight
+	verticles[2].texCoord = { 0, 0};	 ///Top left
 
-	vertices[3].texCoord = { 0, 0};	 ///Top left
-	vertices[4].texCoord = { 1, 1 }; ///Bottom right
-	vertices[5].texCoord = { 1, 0};	 ///Top right
+	verticles[3].texCoord = { 0, 0};	 ///Top left
+	verticles[4].texCoord = { 1, 1 }; ///Bottom right
+	verticles[5].texCoord = { 1, 0};	 ///Top right
 
-	Vertex lightVertices[6];
-	lightVertices[0].normal = { 0, 1, 0, 0 };
-	lightVertices[1].normal = { 0, 1, 0, 0 };
-	lightVertices[2].normal = { 0, 1, 0, 0 };
+	verticles[0].normal = { 0, 1, 0, 0 };
+	verticles[1].normal = { 0, 1, 0, 0 };
+	verticles[2].normal = { 0, 1, 0, 0 };
 
-	lightVertices[3].normal = { 0, 1, 0, 0 };
-	lightVertices[4].normal = { 0, 1, 0, 0 };
-	lightVertices[5].normal = { 0, 1, 0, 0 };
+	verticles[3].normal = { 0, 1, 0, 0 };
+	verticles[4].normal = { 0, 1, 0, 0 };
+	verticles[5].normal = { 0, 1, 0, 0 };
 	
 	//fill vertex buffer
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex),

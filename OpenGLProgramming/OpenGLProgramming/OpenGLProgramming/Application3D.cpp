@@ -29,15 +29,15 @@ bool Application3D::startup()
 	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./shaders/phong.frag");
 
-	m_shader.loadShader(aie::eShaderStage::VERTEX,
+	/*m_shader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/simple.vert");
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
-		"./shaders/simple.frag");
+		"./shaders/simple.frag");*/
 
-	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
+	/*m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
 		"./textures/textured.vert");
 	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
-		"./textures/textured.frag");
+		"./textures/textured.frag");*/
 
 	m_normalShader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/normalmap.vert");
@@ -45,21 +45,18 @@ bool Application3D::startup()
 		"./shaders/normalmap.frag");
 
 	//Checks if it can link the Shader
-	if (m_shader.link() == false)
-	{
-		printf("Shader Error: %s/n", m_shader.getLastError());
-	}
-
-	if (m_texturedShader.link() == false)
-	{
-		printf("Texture Error: %s/n", m_texturedShader.getLastError());
-	}
-
+	//if (m_shader.link() == false)
+	//{
+	//	printf("Shader Error: %s/n", m_shader.getLastError());
+	//}
+	//if (m_texturedShader.link() == false)
+	//{
+	//	printf("Texture Error: %s/n", m_texturedShader.getLastError());
+	//}
 	if (m_phongShader.link() == false)
 	{
 		printf("Texture Error: %s/n", m_phongShader.getLastError());
 	}
-
 	if (m_normalShader.link() == false)
 	{
 		printf("Normal Error: %s/n", m_normalShader.getLastError());
@@ -71,28 +68,27 @@ bool Application3D::startup()
 		printf("Failed to load texture!\n");
 		return false;
 	}
-
 	if (m_bunnyMesh.load("./stanford/Bunny.obj") == false)
 	{
 		printf("Bunny Mesh Error!\n");
 	}
-
 	if (m_dragonMesh.load("./stanford/Dragon.obj") == false)
 	{
 		printf("Dragon Mesh Error!\n");
 	}
-
 	if (m_spearMesh.load("./soulspear/soulspear.obj", true, true) == false)
 	{
 		printf("SoulSpear Mesh Error!\n");
 	}
 
+	//-------------------------RENDER TARGET DATA-------------------------//
 	//Checks if Render Taget has been initialised
-	if (m_renderTarget.initialise(1, getWindowH(), getWindowW()) == false)
+	/*if (m_renderTarget.initialise(1, getWindowH(), getWindowW()) == false)
 	{
 		printf("Render Target Error!\n");
 		return false;
-	}
+	}*/
+	//-------------------------RENDER TARGET DATA-------------------------//
 
 	m_quadMesh.initialiseQuad();
 
@@ -108,8 +104,11 @@ bool Application3D::startup()
 		0.5f, 0, 0, 0,
 		0, 0.5f, 0, 0,
 		0, 0, 0.5f, 0,
-		0, 0, 0, 1
+		0, 0, 0,	1
 	};
+
+	//Bunnys Position
+	m_bunnyTransform[3] = glm::vec4{ 1, 1, 1, 1 };
 
 	//Dragons size
 	/*m_dragonTransform =
@@ -120,13 +119,17 @@ bool Application3D::startup()
 		0, 0, 0, 1.0f
 	};*/
 
-	/*m_spearTransform =
+	//Spears Size
+	m_spearTransform =
 	{
 		1.0f, 0, 0, 0,
-		0,1.0f, 0, 0,
+		0, 1.0f, 0, 0,
 		0, 0, 1.0f, 0,
 		0, 0, 0, 1.0f
-	};*/
+	};
+
+	//Spears Position
+	m_spearTransform[3] = glm::vec4{ 2, 2, 2, 1 };
 
 	//Quads size
 	/*m_quadTransform =
@@ -236,13 +239,14 @@ void Application3D::draw()
 	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.0f);
 
+	//-------------------------RENDER TARGET DATA-------------------------//
 	//Bind our Render Target
-	m_renderTarget.bind();
-
-	clearScreen();
+	//m_renderTarget.bind();
+	//clearScreen();
+	//-------------------------RENDER TARGET DATA-------------------------//
 
 	//Binds the shaders
-	m_shader.bind();							
+	//m_shader.bind();							
 	m_phongShader.bind();	
 	m_normalShader.bind();
 	
@@ -252,6 +256,13 @@ void Application3D::draw()
 	m_phongShader.bindUniform("Is", m_light.specular);
 	m_phongShader.bindUniform("lightDirection", m_light.direction);
 	m_phongShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
+
+	//Normal Shader Binding
+	m_normalShader.bindUniform("Ia", m_ambientLight);
+	m_normalShader.bindUniform("Id", m_light.diffuse);
+	m_normalShader.bindUniform("Is", m_light.specular);
+	m_normalShader.bindUniform("lightDirection", m_light.direction);
+	m_normalShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
 	
 	//Bind transform
 	auto pvm = m_projection * m_view * m_bunnyTransform;
@@ -262,25 +273,31 @@ void Application3D::draw()
 	m_phongShader.bindUniform("NormalMatrix", 
 		glm::inverseTranspose(glm::mat3(m_bunnyTransform)));
 
-	m_renderTarget.unbind();
 
-	clearScreen();
+	pvm = m_projection * m_view * m_spearTransform;
+	m_normalShader.bindUniform("ProjectionViewModel", m_spearTransform);
+	m_normalShader.bindUniform("ModelMatrix", m_spearTransform);
+	m_normalShader.bindUniform("NormalMatrix",
+		glm::inverseTranspose(glm::mat3(m_spearTransform)));
+
+
+	m_gridTexture.bind(0);
+
 
 	m_bunnyMesh.draw();						//Draws the Bunny Mesh
-
-	//Bind transforms for lighting
-	//glm::mat3 mat = glm::inverseTranspose(glm::mat3(m_bunnyTransform));
-	//m_normalShader.bindUniform("NormalMatrix", mat);
-
+	m_spearMesh.draw();						//Draws the Spear Mesh
 	//m_dragonMesh.draw();					//Draws the Dragon Mesh
-	//m_spearMesh.draw();					//Draws the Spear Mesh
 
-	m_texturedShader.bind();
-	pvm = m_projection * m_view * m_quadTransform;
-	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
-	m_texturedShader.bindUniform("diffuseTexture", 0);
-	m_renderTarget.getTarget(0).bind(0);
-	m_quadMesh.draw();						//Draws the Quad Mesh
+	//-------------------------RENDER TARGET DATA-------------------------//
+	//m_renderTarget.unbind();
+	//clearScreen();
+	//m_texturedShader.bind();
+	//pvm = m_projection * m_view * m_quadTransform;
+	//m_texturedShader.bindUniform("ProjectionViewModel", pvm);
+	//m_texturedShader.bindUniform("diffuseTexture", 0);
+	//m_renderTarget.getTarget(0).bind(0);
+	//m_quadMesh.draw();						//Draws the Quad Mesh
+	//-------------------------RENDER TARGET DATA-------------------------//
 
 	aie::Gizmos::draw(m_projection * m_view);						///Draw 3D gizmos
 	aie::Gizmos::draw2D((float)getWindowW(), (float)getWindowH());	///Draw 2D Gizmos using orthogonal projection matrix
