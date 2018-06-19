@@ -12,6 +12,7 @@ Application3D::~Application3D()
 {
 }
 
+
 bool Application3D::startup()
 {
 	//Initialize primitive counts
@@ -34,10 +35,10 @@ bool Application3D::startup()
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT,
 		"./shaders/simple.frag");*/
 
-	/*m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
+	m_texturedShader.loadShader(aie::eShaderStage::VERTEX,
 		"./textures/textured.vert");
 	m_texturedShader.loadShader(aie::eShaderStage::FRAGMENT,
-		"./textures/textured.frag");*/
+		"./textures/textured.frag");
 
 	m_normalShader.loadShader(aie::eShaderStage::VERTEX,
 		"./shaders/normalmap.vert");
@@ -49,10 +50,10 @@ bool Application3D::startup()
 	//{
 	//	printf("Shader Error: %s/n", m_shader.getLastError());
 	//}
-	//if (m_texturedShader.link() == false)
-	//{
-	//	printf("Texture Error: %s/n", m_texturedShader.getLastError());
-	//}
+	if (m_texturedShader.link() == false)
+	{
+		printf("Texture Error: %s/n", m_texturedShader.getLastError());
+	}
 	if (m_phongShader.link() == false)
 	{
 		printf("Texture Error: %s/n", m_phongShader.getLastError());
@@ -98,6 +99,25 @@ bool Application3D::startup()
 	m_light.specular = { 1, 1, 0 };
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
+	m_secondaryLight.diffuse = { 1.38f, 0.43f, 2.26f };
+	m_secondaryLight.specular = { 1, 1, 0 };
+	
+	//We create the spot light and direction light
+	m_spotLight.position = glm::vec4(-4, 0, 10, 1);
+	m_spotLight.intensities = glm::vec3(2, 2, 2);
+	m_spotLight.attenuation = 0.1f;
+	m_spotLight.ambientCoefficient = 0.0f;
+	m_spotLight.coneAngle = 15.0f;
+	m_spotLight.coneDirection = glm::vec3(0, 0, -1);
+
+	m_directionLight.position = glm::vec4(1, 0.8, 0.6, 0);
+	m_directionLight.intensities = glm::vec3(0.4, 0.3, 0.1);
+	m_directionLight.ambientCoefficient = 0.06f;
+
+	//we push the lights into the array
+	gLights.push_back(m_spotLight);
+	gLights.push_back(m_directionLight);
+
 	//Bunnys size
 	m_bunnyTransform =
 	{
@@ -106,9 +126,8 @@ bool Application3D::startup()
 		0, 0, 0.5f, 0,
 		0, 0, 0,	1
 	};
-
 	//Bunnys Position
-	m_bunnyTransform[3] = glm::vec4{ 1, 1, 1, 1 };
+	m_bunnyTransform[3] = glm::vec4{ -1, 1, 1, 1 };
 
 	//Dragons size
 	/*m_dragonTransform =
@@ -127,18 +146,18 @@ bool Application3D::startup()
 		0, 0, 1.0f, 0,
 		0, 0, 0, 1.0f
 	};
-
 	//Spears Position
-	m_spearTransform[3] = glm::vec4{ 2, 2, 2, 1 };
+	m_spearTransform[3] = glm::vec4{ 5, 5, 5, 1 };
 
 	//Quads size
-	/*m_quadTransform =
+	m_quadTransform =
 	{
-		10, 0, 0, 0,
-		0, 10, 0, 0,
-		0, 0, 10, 0,
+		10.0f, 0, 0, 0,
+		0, 10.0f, 0, 0,
+		0, 0, 10.0f, 0,
 		0, 0, 0, 1
-	};*/
+	};
+	//m_quadTransform[3] = glm::vec4{ 1, 1, 1, 1 };
 
 
 	return true;
@@ -186,6 +205,10 @@ bool Application3D::update()
 	//Rotates the light
 	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2),
 		glm::sin(time * 2), 0));
+
+	m_secondaryLight.direction = glm::normalize(glm::vec3(glm::cos(time * 2),
+		glm::sin(time * 2), 0));
+
 
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -246,26 +269,32 @@ void Application3D::draw()
 	//-------------------------RENDER TARGET DATA-------------------------//
 
 	//Binds the shaders
-	//m_shader.bind();							
+	//m_shader.bind();
+
+	m_texturedShader.bind();
+
+	auto pvm = m_projection * m_view * m_quadTransform;
+	m_texturedShader.bindUniform("ProjectionViewModel", pvm);
+
+	m_texturedShader.bindUniform("diffuseTexture", 0);
+
+	//Binds the grid texture to a specified location
+	m_gridTexture.bind(0);
+
+	m_quadMesh.draw();						//Draws the Quad Mesh
+
+	//----------------------------------------BUNNYDRAW----------------------------------------//
 	m_phongShader.bind();	
-	m_normalShader.bind();
 	
 	//Bind list
 	m_phongShader.bindUniform("Ia", m_ambientLight);
-	m_phongShader.bindUniform("Id", m_light.diffuse);
-	m_phongShader.bindUniform("Is", m_light.specular);
-	m_phongShader.bindUniform("lightDirection", m_light.direction);
+	m_phongShader.bindUniform("Id", m_secondaryLight.diffuse);
+	m_phongShader.bindUniform("Is", m_secondaryLight.specular);
+	m_phongShader.bindUniform("lightDirection", m_secondaryLight.direction);
 	m_phongShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
 
-	//Normal Shader Binding
-	m_normalShader.bindUniform("Ia", m_ambientLight);
-	m_normalShader.bindUniform("Id", m_light.diffuse);
-	m_normalShader.bindUniform("Is", m_light.specular);
-	m_normalShader.bindUniform("lightDirection", m_light.direction);
-	m_normalShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
-	
 	//Bind transform
-	auto pvm = m_projection * m_view * m_bunnyTransform;
+	pvm = m_projection * m_view * m_bunnyTransform;
 	m_phongShader.bindUniform("ProjectionViewModel", pvm);
 	
 	//Binds transform for lighting
@@ -273,19 +302,44 @@ void Application3D::draw()
 	m_phongShader.bindUniform("NormalMatrix", 
 		glm::inverseTranspose(glm::mat3(m_bunnyTransform)));
 
+	m_bunnyMesh.draw();						//Draws the Bunny Mesh
+	//----------------------------------------BUNNYDRAW----------------------------------------//
+
+
+	//----------------------------------------SPEARDRAW----------------------------------------//
+	m_normalShader.bind();
+
+	//Normal Shader Binding
+	m_normalShader.bindUniform("Ia", m_ambientLight);
+	m_normalShader.bindUniform("Id", m_light.diffuse);
+	m_normalShader.bindUniform("Is", m_light.specular);
+	m_normalShader.bindUniform("lightDirection", m_light.direction);
+	m_normalShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
 
 	pvm = m_projection * m_view * m_spearTransform;
-	m_normalShader.bindUniform("ProjectionViewModel", m_spearTransform);
+	m_normalShader.bindUniform("ProjectionViewModel", pvm);
 	m_normalShader.bindUniform("ModelMatrix", m_spearTransform);
 	m_normalShader.bindUniform("NormalMatrix",
 		glm::inverseTranspose(glm::mat3(m_spearTransform)));
 
+	//Binds the uniform for each light in the array
+	m_normalShader.bindUniform("numLights", (int)gLights.size());
 
-	m_gridTexture.bind(0);
+	for (int i = 0; i < gLights.size(); i++)
+	{
+		BindLightUniform(&m_normalShader, "position", i, gLights[i].position);
+		BindLightUniform(&m_normalShader, "intensities", i, gLights[i].intensities);
+		BindLightUniform(&m_normalShader, "attenuation", i, gLights[i].attenuation);
+		BindLightUniform(&m_normalShader, "ambientCoefficient", i, gLights[i].ambientCoefficient);
+		BindLightUniform(&m_normalShader, "coneAngle", i, gLights[i].coneAngle);
+		BindLightUniform(&m_normalShader, "coneDirection", i, gLights[i].coneDirection);
+	}
 
-
-	m_bunnyMesh.draw();						//Draws the Bunny Mesh
 	m_spearMesh.draw();						//Draws the Spear Mesh
+
+	//----------------------------------------SPEARDRAW----------------------------------------//
+
+
 	//m_dragonMesh.draw();					//Draws the Dragon Mesh
 
 	//-------------------------RENDER TARGET DATA-------------------------//

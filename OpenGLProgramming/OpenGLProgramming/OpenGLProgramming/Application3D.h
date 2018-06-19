@@ -2,6 +2,7 @@
 #include <iostream>
 #include <crtdbg.h>
 #include <chrono>
+#include <sstream>
 
 
 #include <glm/glm.hpp>
@@ -18,11 +19,15 @@
 #include <OBJMesh.h>
 #include "RenderTarget.h"
 
-
-
-
 struct  Light
 {
+	glm::vec4 position;
+	glm::vec3 intensities;
+	float attenuation;
+	float ambientCoefficient;
+	float coneAngle;
+	glm::vec3 coneDirection;
+
 	glm::vec3 direction;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
@@ -34,6 +39,9 @@ public:
 	Application3D();
 	~Application3D();
 
+	template <typename T>
+	void BindLightUniform(aie::ShaderProgram * shaders, const char * propertyName, size_t lightIndex, const T& value);
+
 	///STarting up the program
 	bool startup();
 
@@ -43,6 +51,7 @@ public:
 	///Updates the screen per frame
 	bool update();
 	
+
 	///Draws the objects to the screen
 	void draw();
 	
@@ -69,6 +78,9 @@ private:
 	GLFWwindow*			m_window;
 	Mesh				m_quadMesh;
 	Light				m_light;
+	Light				m_secondaryLight;
+	Light				m_spotLight;
+	Light				m_directionLight;
 
 	///aie variables
 	aie::ShaderProgram  m_phongShader;
@@ -84,7 +96,8 @@ private:
 	std::chrono::high_resolution_clock::time_point m_previousFrameTime;
 	std::chrono::high_resolution_clock::time_point m_applicationStartTime;
 
-	///Variables
+	///VariablesS
+	std::vector<Light>	gLights;
 	glm::vec3			m_ambientLight;
 	glm::mat4			m_spearTransform;
 	glm::mat4			m_dragonTransform;
@@ -93,3 +106,14 @@ private:
 	glm::mat4			m_view;
 	glm::mat4			m_projection;
 };
+
+//This uses the BindLightUniform, which constructs the uniform names based on the struct element and the index
+template<typename T>
+inline void Application3D::BindLightUniform(aie::ShaderProgram * shaders, const char* propertyName, size_t lightIndex, const T& value)
+{
+	std::ostringstream ss;
+	ss << "allLights[" << lightIndex << "]." << propertyName;
+	std::string uniformName = ss.str();
+
+	shaders->bindUniform(uniformName.c_str(), value);
+}
