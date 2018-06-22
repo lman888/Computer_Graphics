@@ -137,7 +137,8 @@ void main()
 	vec3 linearColor = vec3(0);
 	for(int i = 0; i < numLights; i++)
 	{
-		linearColor += ApplyLight(allLights[i], diffuse, N, T, V);
+		//Light light, vec3 surfaceColour, vec3 normal, vec3 surfacePos, vec3 surfaceToCamera
+		linearColor += ApplyLight(allLights[i], Kd, N, T, Is);
 	}
 
 
