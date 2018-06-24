@@ -99,7 +99,7 @@ bool Application3D::startup()
 	m_light.specular = { 1, 1, 0 };
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
-	m_secondaryLight.diffuse = { 1.38f, 0.43f, 2.26f };
+	m_secondaryLight.diffuse = { 0.38f, 0.43f, 0.26f };
 	m_secondaryLight.specular = { 1, 1, 0 };
 	
 	//We create the spot light and direction light
@@ -314,6 +314,8 @@ void Application3D::draw()
 	m_normalShader.bindUniform("Id", m_light.diffuse);
 	m_normalShader.bindUniform("Is", m_light.specular);
 	m_normalShader.bindUniform("lightDirection", m_light.direction);
+
+
 	m_normalShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
 
 	pvm = m_projection * m_view * m_spearTransform;
@@ -323,7 +325,7 @@ void Application3D::draw()
 		glm::inverseTranspose(glm::mat3(m_spearTransform)));
 
 	//Binds the uniform for each light in the array
-	m_normalShader.bindUniform("numLights", (int)gLights.size());
+	m_normalShader.bindUniform("allLights", (int)gLights.size());
 
 	for (int i = 0; i < gLights.size(); i++)
 	{

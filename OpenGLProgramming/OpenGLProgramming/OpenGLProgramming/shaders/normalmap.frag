@@ -17,12 +17,12 @@ uniform vec3 Kd; // material diffuse
 uniform vec3 Ks; // material specular
 
 uniform float specularPower;
-
 uniform vec3 Ia; // light ambient
 uniform vec3 Id; // light diffuse
 uniform vec3 Is; // light specular
 
 uniform vec3 lightDirection;
+
 uniform vec3 cameraPosition;
 
 uniform vec4 lightPosition;
@@ -41,9 +41,8 @@ uniform struct Light
 	float ambientCoefficient;
 	float coneAngle;
 	vec3 coneDirection;
-} 
+}
 allLights[MAX_LIGHTS];
-
 
 //The next step is to refactor the GLSL code so that it loops over the array. We extract all the lighting code into a function
 //Called ApplyLight, which does the entire lighting calculation for a single light.
@@ -55,6 +54,7 @@ allLights[MAX_LIGHTS];
 
 //With all the lighting code extraced into a function we can loop through all the lights. For each light, we call ApplyLight and add all the results together 
 //To get the surface colour.
+
 vec3 ApplyLight(Light light, vec3 surfaceColour, vec3 normal, vec3 surfacePos, vec3 surfaceToCamera)
 {
 	vec3 surfaceToLight;
@@ -140,7 +140,6 @@ void main()
 		//Light light, vec3 surfaceColour, vec3 normal, vec3 surfacePos, vec3 surfaceToCamera
 		linearColor += ApplyLight(allLights[i], Kd, N, T, Is);
 	}
-
 
 	//Calculate each light property
 	vec3 ambient = Ia * Ka;
