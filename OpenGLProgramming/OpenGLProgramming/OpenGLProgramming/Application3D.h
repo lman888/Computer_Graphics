@@ -39,8 +39,8 @@ public:
 	Application3D();
 	~Application3D();
 
-	template <typename T>
-	void BindLightUniform(aie::ShaderProgram * shaders, const char * propertyName, size_t lightIndex, const T& value);
+	//template <typename T>
+	//void BindLightUniform(aie::ShaderProgram * shaders, const char * propertyName, size_t lightIndex, const T& value);
 
 	///STarting up the program
 	bool startup();
@@ -79,8 +79,9 @@ private:
 	Mesh				m_quadMesh;
 	Light				m_light;
 	Light				m_secondaryLight;
-	Light				m_spotLight;
-	Light				m_directionLight;
+	Light				m_thirdLight;
+	//Light				m_spotLight;
+	//Light				m_directionLight;
 
 	///aie variables
 	aie::ShaderProgram  m_phongShader;
@@ -97,7 +98,7 @@ private:
 	std::chrono::high_resolution_clock::time_point m_applicationStartTime;
 
 	///VariablesS
-	std::vector<Light>	gLights;
+	//std::vector<Light>	gLights;
 	glm::vec3			m_ambientLight;
 	glm::mat4			m_spearTransform;
 	glm::mat4			m_dragonTransform;
@@ -108,12 +109,12 @@ private:
 };
 
 //This uses the BindLightUniform, which constructs the uniform names based on the struct element and the index
-template<typename T>
-inline void Application3D::BindLightUniform(aie::ShaderProgram * shaders, const char* propertyName, size_t lightIndex, const T& value)
-{
-	std::ostringstream ss;
-	ss << "allLights[" << lightIndex << "]." << propertyName;
-	std::string uniformName = ss.str();
-
-	shaders->bindUniform(uniformName.c_str(), value);
-}
+//template<typename T>
+//inline void Application3D::BindLightUniform(aie::ShaderProgram * shaders, const char* propertyName, size_t lightIndex, const T& value)
+//{
+//	std::ostringstream ss;
+//	ss << "allLights[" << lightIndex << "]." << propertyName;
+//	std::string uniformName = ss.str();
+//
+//	shaders->bindUniform(uniformName.c_str(), value);
+//}

@@ -95,28 +95,32 @@ bool Application3D::startup()
 
 
 	//Sets the lights colour
-	m_light.diffuse = { 1, 1, 0 };
-	m_light.specular = { 1, 1, 0 };
 	m_ambientLight = { 0.25f, 0.25f, 0.25f };
+	m_light.diffuse = { 0, 0, 1 };
+	m_light.specular = { 1, 1, 0 };
 
-	m_secondaryLight.diffuse = { 0.38f, 0.43f, 0.26f };
+	m_secondaryLight.diffuse = { 0, 1, 0 };
 	m_secondaryLight.specular = { 1, 1, 0 };
-	
-	//We create the spot light and direction light
-	m_spotLight.position = glm::vec4(-4, 0, 10, 1);
-	m_spotLight.intensities = glm::vec3(2, 2, 2);
-	m_spotLight.attenuation = 0.1f;
-	m_spotLight.ambientCoefficient = 0.0f;
-	m_spotLight.coneAngle = 15.0f;
-	m_spotLight.coneDirection = glm::vec3(0, 0, -1);
 
-	m_directionLight.position = glm::vec4(1, 0.8, 0.6, 0);
-	m_directionLight.intensities = glm::vec3(0.4, 0.3, 0.1);
-	m_directionLight.ambientCoefficient = 0.06f;
+	m_thirdLight.diffuse = { 1, 0, 0 };
+	m_thirdLight.specular = { 1, 0, 1 };
 
-	//we push the lights into the array
-	gLights.push_back(m_spotLight);
-	gLights.push_back(m_directionLight);
+	//
+	////We create the spot light and direction light
+	//m_spotLight.position = glm::vec4(-4, 0, 10, 1);
+	//m_spotLight.intensities = glm::vec3(0.4, 1, 0.24);
+	//m_spotLight.attenuation = 0.1f;
+	//m_spotLight.ambientCoefficient = 0.38f;
+	//m_spotLight.coneAngle = 15.0f;
+	//m_spotLight.coneDirection = glm::vec3(0, 0, -1);
+
+	//m_directionLight.position = glm::vec4(1, 0.8, 0.6, 0);
+	//m_directionLight.intensities = glm::vec3(1, 1, 1);
+	//m_directionLight.ambientCoefficient = 0.06f;
+
+	////we push the lights into the array
+	//gLights.push_back(m_spotLight);
+	//gLights.push_back(m_directionLight);
 
 	//Bunnys size
 	m_bunnyTransform =
@@ -202,12 +206,19 @@ bool Application3D::update()
 	//Query time since application started
 	float time = glfwGetTime();
 
+	//m_spotLight.direction = glm::normalize(glm::vec3(glm::cos(time * 2),
+		//glm::sin(time * 2), 0));
+
+
 	//Rotates the light
 	m_light.direction = glm::normalize(glm::vec3(glm::cos(time * 2),
 		glm::sin(time * 2), 0));
 
-	m_secondaryLight.direction = glm::normalize(glm::vec3(glm::cos(time * 2),
-		glm::sin(time * 2), 0));
+	m_secondaryLight.direction = -glm::normalize(glm::vec3(glm::cos(time * 4),
+		glm::sin(time * 4), 0));
+
+	m_thirdLight.direction = glm::normalize(glm::vec3(glm::cos(time * 6),
+		glm::sin(time * 6), 0));
 
 
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
@@ -287,10 +298,24 @@ void Application3D::draw()
 	m_phongShader.bind();	
 	
 	//Bind list
+	//Ambient 
 	m_phongShader.bindUniform("Ia", m_ambientLight);
-	m_phongShader.bindUniform("Id", m_secondaryLight.diffuse);
-	m_phongShader.bindUniform("Is", m_secondaryLight.specular);
-	m_phongShader.bindUniform("lightDirection", m_secondaryLight.direction);
+
+	//Diffuse
+	m_phongShader.bindUniform("Id", m_light.diffuse);
+	m_phongShader.bindUniform("Id2", m_secondaryLight.diffuse);
+	//m_phongShader.bindUniform("Id", m_thirdLight.diffuse);
+
+	//Specular
+	m_phongShader.bindUniform("Is", m_light.specular);
+	m_phongShader.bindUniform("Is2", m_secondaryLight.specular);
+	//m_phongShader.bindUniform("Is", m_thirdLight.specular);
+
+	//Light Direction
+	m_phongShader.bindUniform("lightDirection", m_light.direction);
+	m_phongShader.bindUniform("lightDirection2", m_secondaryLight.direction);
+	//m_phongShader.bindUniform("lightDirection", m_thirdLight.direction);
+
 	m_phongShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
 
 	//Bind transform
@@ -311,10 +336,21 @@ void Application3D::draw()
 
 	//Normal Shader Binding
 	m_normalShader.bindUniform("Ia", m_ambientLight);
-	m_normalShader.bindUniform("Id", m_light.diffuse);
-	m_normalShader.bindUniform("Is", m_light.specular);
-	m_normalShader.bindUniform("lightDirection", m_light.direction);
 
+	//Diffuse
+	m_normalShader.bindUniform("Id", m_light.diffuse);
+	m_normalShader.bindUniform("Id2", m_secondaryLight.diffuse);
+	m_normalShader.bindUniform("Id3", m_thirdLight.diffuse);
+
+	//Specular
+	m_normalShader.bindUniform("Is", m_light.specular);
+	m_normalShader.bindUniform("Is2", m_secondaryLight.specular);
+	m_normalShader.bindUniform("Is3", m_thirdLight.specular);
+
+	//Lights Direction
+	m_normalShader.bindUniform("lightDirection", m_light.direction);
+	m_normalShader.bindUniform("lightDirection2", m_secondaryLight.direction);
+	m_normalShader.bindUniform("lightDirection3", m_thirdLight.direction);
 
 	m_normalShader.bindUniform("cameraPosition", glm::vec3(glm::inverse(m_view)[3]));
 
@@ -325,17 +361,17 @@ void Application3D::draw()
 		glm::inverseTranspose(glm::mat3(m_spearTransform)));
 
 	//Binds the uniform for each light in the array
-	m_normalShader.bindUniform("allLights", (int)gLights.size());
+	//m_normalShader.bindUniform("allLights", (int)gLights.size());
 
-	for (int i = 0; i < gLights.size(); i++)
-	{
-		BindLightUniform(&m_normalShader, "position", i, gLights[i].position);
-		BindLightUniform(&m_normalShader, "intensities", i, gLights[i].intensities);
-		BindLightUniform(&m_normalShader, "attenuation", i, gLights[i].attenuation);
-		BindLightUniform(&m_normalShader, "ambientCoefficient", i, gLights[i].ambientCoefficient);
-		BindLightUniform(&m_normalShader, "coneAngle", i, gLights[i].coneAngle);
-		BindLightUniform(&m_normalShader, "coneDirection", i, gLights[i].coneDirection);
-	}
+	//for (int i = 0; i < gLights.size(); i++)
+	//{
+	//	BindLightUniform(&m_normalShader, "position", i, gLights[i].position);
+	//	BindLightUniform(&m_normalShader, "intensities", i, gLights[i].intensities);
+	//	BindLightUniform(&m_normalShader, "attenuation", i, gLights[i].attenuation);
+	//	BindLightUniform(&m_normalShader, "ambientCoefficient", i, gLights[i].ambientCoefficient);
+	//	BindLightUniform(&m_normalShader, "coneAngle", i, gLights[i].coneAngle);
+	//	BindLightUniform(&m_normalShader, "coneDirection", i, gLights[i].coneDirection);
+	//}
 
 	m_spearMesh.draw();						//Draws the Spear Mesh
 

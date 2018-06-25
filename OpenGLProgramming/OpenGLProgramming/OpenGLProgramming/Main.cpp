@@ -24,7 +24,7 @@ int main()
 	{
 		delete theApp;
 	}
-
+	
 	delete theApp;
 
 	return 0;
