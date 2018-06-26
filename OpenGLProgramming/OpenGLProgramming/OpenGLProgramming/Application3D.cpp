@@ -20,7 +20,7 @@ bool Application3D::startup()
 
 	//The GLM lookAt() Method builds a view transform, which is an inverseion of a transform that has a translation of (10,10,10)
 	m_view = glm::lookAt(glm::vec3(15), glm::vec3(0), glm::vec3(0, 1, 0));
-	m_projection = glm::perspective(glm::pi<float>() * 0.25f,
+	m_projection = glm::perspective(glm::pi<float>() * 0.5f,
 		m_windowWidth / (float)m_windowHeight, 0.1f, 1000.f);
 
 
@@ -195,7 +195,9 @@ bool Application3D::initialise(int windowH, int windowW, std::string windowTitle
 	}
 
 	///pushes in variables
-	m_windowHeight = windowW;
+	m_windowHeight = windowH;
+
+	m_windowWidth = windowW;
 	m_window = window;
 
 	return true;
